@@ -10,6 +10,10 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["TableAPI/TableAPI.csproj", "TableAPI/"]
+COPY ["Core/Core.csproj", "Core/"]
+COPY ["Dados/Dados.csproj", "Dados/"]
+COPY ["RequestResponse/DTOs.csproj", "RequestResponse/"]
+COPY ["Services/Services.csproj", "Services/"]
 RUN dotnet restore "./TableAPI/TableAPI.csproj"
 COPY . .
 WORKDIR "/src/TableAPI"

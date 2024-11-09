@@ -1,0 +1,30 @@
+services:  
+  # Serviço da Aplicação .NET
+  api-tabela:
+    image: netiim/tabela-dinamica:dev
+    container_name: tabela-dinamica-service
+    depends_on:
+      - db
+    networks:
+      - table-bridge
+    ports:
+      - "5010:8080"
+      - "5011:8081"
+
+  # Serviço do Banco de Dados
+  db:
+    image: mongo:latest
+    container_name: mongo-table
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - table-bridge
+
+volumes:
+  mongo-data:
+
+networks:
+  table-bridge:
+    driver: bridge

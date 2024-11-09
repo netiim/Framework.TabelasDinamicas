@@ -1,7 +1,11 @@
-﻿using Core.Interfaces.Repository;
+﻿using Core.DTOs;
+using Core.Interfaces.Repository;
 using Core.Interfaces.Services;
 using Dados.Repositorio;
+using LocalizacaoService._03_Repositorys.Config;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using Services;
 using System.Reflection;
 
@@ -55,6 +59,45 @@ public static class ExtensionsProgram
         });
 
         return services;
-    }   
+    }
+    public static IServiceCollection AddAutoMapper(this IServiceCollection services)
+    {
+        services.AddAutoMapper(typeof(MappingProfile));
+        return services;
+    }
+    public static IServiceCollection AddCorsConfig(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", policy =>
+            {
+                policy.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader();
+            });
+        });
+
+        return services;
+    }
+    public static IServiceCollection AddConfiguracaoMongo(this IServiceCollection services, IConfiguration config)
+    {
+        services.Configure<MongoDbSettings>(
+                 config.GetSection("MongoDbSettings"));
+
+        services.AddSingleton<IMongoClient, MongoClient>(sp =>
+        {
+            var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
+            return new MongoClient(settings.ConnectionString);
+        });
+
+        services.AddScoped(sp =>
+        {
+            var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
+            var client = sp.GetRequiredService<IMongoClient>();
+            return client.GetDatabase(settings.DatabaseName);
+        });
+
+        return services;
+    }
 
 }

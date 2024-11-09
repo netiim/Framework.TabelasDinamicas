@@ -4,5 +4,6 @@ namespace Core.Entidades;
 
 public class Conteudo
 {
-    public Dictionary<string, string> ConteudoValue { get; set; } = new Dictionary<string, string>();
+    public string Chave { get; set; } 
+    public string Valor { get; set; } 
 }

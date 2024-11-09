@@ -1,3 +1,4 @@
+using AutoMapper;
 using Core.Entidades;
 using Core.Interfaces.Services;
 using DTOs.TablesModel;
@@ -10,10 +11,12 @@ namespace TableAPI.Controllers
     public class TableModelController : ControllerBase
     {
         private readonly ITableModelService _service;
+        private readonly IMapper _mapper;
 
-        public TableModelController(ITableModelService service)
+        public TableModelController(ITableModelService service, IMapper mapper)
         {
             _service = service;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -23,10 +26,10 @@ namespace TableAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTable(CreateTableModelDTO table)
+        public async Task<IActionResult> CreateTable(CreateTableModelDTO tableDTO)
         {
-            //Auto Mapper
-            //await _service.CreateAsync(table);
+            TableModel table = _mapper.Map<TableModel>(tableDTO);
+            await _service.CreateAsync(table);
             return Ok();
         }
     }
